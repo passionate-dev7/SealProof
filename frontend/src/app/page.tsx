@@ -93,7 +93,7 @@ export default function Home() {
               in the Digital Age
             </h1>
             <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
-              TruthChain provides cryptographic proof of content authenticity using blockchain technology.
+              SealProof provides cryptographic proof of content authenticity using blockchain technology.
               Register, verify, and trust digital content with immutable provenance.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
@@ -144,7 +144,7 @@ export default function Home() {
               How It Works
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-              Three simple steps to ensure your content's authenticity
+              Three simple steps to ensure your content&apos;s authenticity
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">

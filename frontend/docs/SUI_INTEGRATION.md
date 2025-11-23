@@ -1,6 +1,6 @@
 # Sui Wallet Integration Guide
 
-This document describes the Sui wallet integration setup for the TruthChain frontend.
+This document describes the Sui wallet integration setup for the SealProof frontend.
 
 ## Overview
 
@@ -302,7 +302,7 @@ export default function UploadPage() {
 
   return (
     <div className="container mx-auto p-8">
-      <h1>Upload to TruthChain</h1>
+      <h1>Upload to SealProof</h1>
       <UploadToWalrus
         packageId={TESTNET_CONTRACT_PACKAGE_ID}
         onUploadComplete={handleComplete}

@@ -1,6 +1,6 @@
 'use client';
 
-import { Shield, CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
+import { CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
 import { formatConfidence } from '../lib/formatters';
 
 interface VerificationBadgeProps {

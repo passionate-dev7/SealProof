@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@mysten/dapp-kit": "^0.16.15",
+    "@mysten/seal": "^0.9.4",
     "@mysten/sui": "^1.36.0",
     "@mysten/wallet-standard": "^0.16.5",
     "@radix-ui/react-select": "^2.2.5",

@@ -19,7 +19,7 @@ export const useSuiWallet = () => {
       setIsExecuting(true);
       try {
         const result = await signAndExecuteTransaction({
-          transaction,
+          transaction: transaction as unknown as Parameters<typeof signAndExecuteTransaction>[0]['transaction'],
           chain: 'sui:testnet',
         });
 

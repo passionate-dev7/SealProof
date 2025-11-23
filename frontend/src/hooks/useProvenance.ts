@@ -14,9 +14,10 @@ export const useProvenance = () => {
       queryClient.invalidateQueries({ queryKey: ['dashboard'] });
       toast.success('Content registered successfully!');
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       console.error('Registration failed:', error);
-      toast.error(error.response?.data?.message || 'Failed to register content');
+      const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Failed to register content';
+      toast.error(errorMessage);
     },
   });
 
@@ -28,9 +29,10 @@ export const useProvenance = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['verifications'] });
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       console.error('Verification failed:', error);
-      toast.error(error.response?.data?.message || 'Failed to verify content');
+      const errorMessage = (error as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Failed to verify content';
+      toast.error(errorMessage);
     },
   });
 

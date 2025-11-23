@@ -2,7 +2,7 @@
 
 ## Summary
 
-The Sui wallet integration has been successfully configured for the TruthChain Next.js frontend with both existing and new implementations.
+The Sui wallet integration has been successfully configured for the SealProof Next.js frontend with both existing and new implementations.
 
 ## What Was Done
 
@@ -99,7 +99,7 @@ The project already has a working Sui wallet integration via `@suiware/kit`:
 - Lower-level control
 - More flexibility
 - Custom components and hooks
-- Better for TruthChain-specific features
+- Better for SealProof-specific features
 
 **Both approaches work together seamlessly!**
 
@@ -264,7 +264,7 @@ export default function Register() {
 ## Next Steps
 
 ### 1. Deploy Smart Contract
-- [ ] Write Move contract for TruthChain
+- [ ] Write Move contract for SealProof
 - [ ] Deploy to Sui testnet
 - [ ] Update `.env.local` with package ID
 

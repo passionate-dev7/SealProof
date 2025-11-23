@@ -50,7 +50,7 @@ export const useWalrus = () => {
           size: file.size,
           contentType: file.type,
         };
-        toast.info('File already exists in Walrus storage');
+        toast('File already exists in Walrus storage', { icon: 'ℹ️' });
         return result;
       }
 

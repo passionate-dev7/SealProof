@@ -34,7 +34,7 @@ export default function ProvenanceCertificate({ data, onDownload }: ProvenanceCe
               Provenance Certificate
             </h3>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Verified on TruthChain
+              Verified on SealProof
             </p>
           </div>
         </div>

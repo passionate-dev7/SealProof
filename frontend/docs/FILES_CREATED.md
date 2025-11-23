@@ -33,7 +33,7 @@ This document lists all files created for the Sui wallet integration setup.
 - Displays success feedback with blob ID and transaction
 - Integrates with both Walrus and Sui blockchain
 
-**Purpose**: Production-ready upload interface for TruthChain
+**Purpose**: Production-ready upload interface for SealProof
 
 ---
 

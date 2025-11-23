@@ -41,7 +41,7 @@ body, #root {
 }
 /* ~ Custom styles where it's not possible to use Tailwind classes. */
 
-/* TruthChain Custom Styles */
+/* SealProof Custom Styles */
 @layer components {
   .btn {
     @apply px-6 py-3 rounded-lg font-medium transition-all duration-200

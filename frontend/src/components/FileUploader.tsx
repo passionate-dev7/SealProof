@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
+import NextImage from 'next/image';
 import { Upload, X, FileText, Image, Video, Music, File } from 'lucide-react';
 import { formatFileSize } from '../lib/formatters';
 
@@ -57,11 +58,11 @@ export default function FileUploader({
   };
 
   const getFileIcon = (file: File) => {
-    if (file.type.startsWith('image/')) return <Image className="h-8 w-8" />;
-    if (file.type.startsWith('video/')) return <Video className="h-8 w-8" />;
-    if (file.type.startsWith('audio/')) return <Music className="h-8 w-8" />;
-    if (file.type.includes('pdf') || file.type.includes('document')) return <FileText className="h-8 w-8" />;
-    return <File className="h-8 w-8" />;
+    if (file.type.startsWith('image/')) return <Image className="h-8 w-8" aria-label="Image file" />;
+    if (file.type.startsWith('video/')) return <Video className="h-8 w-8" aria-label="Video file" />;
+    if (file.type.startsWith('audio/')) return <Music className="h-8 w-8" aria-label="Audio file" />;
+    if (file.type.includes('pdf') || file.type.includes('document')) return <FileText className="h-8 w-8" aria-label="Document file" />;
+    return <File className="h-8 w-8" aria-label="File" />;
   };
 
   return (
@@ -100,10 +101,13 @@ export default function FileUploader({
         <div className="card animate-fade-in">
           <div className="flex items-start space-x-4">
             {preview ? (
-              <img
+              <NextImage
                 src={preview}
-                alt="Preview"
+                alt="File preview"
+                width={80}
+                height={80}
                 className="w-20 h-20 object-cover rounded-lg"
+                unoptimized
               />
             ) : (
               <div className="p-4 bg-gray-100 dark:bg-gray-700 rounded-lg text-gray-600 dark:text-gray-300">

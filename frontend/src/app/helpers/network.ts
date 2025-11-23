@@ -7,7 +7,12 @@ import { ENetwork } from '~~/types/ENetwork'
 export const transactionUrl = (baseExplorerUrl: string, txDigest: string) => {
   return `${baseExplorerUrl}/txblock/${txDigest}`
 }
-export const packageUrl = (baseExplorerUrl: string, packageId: string) => {
+export const packageUrl = (baseExplorerUrl: string | undefined, packageId: string) => {
+  // Return empty string if no explorer URL is provided
+  if (!baseExplorerUrl) {
+    return '#'
+  }
+
   // Local explorer doesn't have a package view, so we stick with object view instead.
   const subpath =
     baseExplorerUrl.search('localhost') === -1 ? 'package' : 'object'

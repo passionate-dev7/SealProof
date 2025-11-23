@@ -25,7 +25,7 @@ export default function UploadPage() {
       {/* Header Section */}
       <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
         <div>
-          <h1 className="text-3xl font-bold">TruthChain Upload</h1>
+          <h1 className="text-3xl font-bold">SealProof Upload</h1>
           <p className="mt-2 text-gray-600 dark:text-gray-400">
             Upload files to Walrus and register on Sui blockchain
           </p>
@@ -55,8 +55,8 @@ export default function UploadPage() {
 
       {/* Upload Component */}
       <UploadToWalrus
-        packageId={TESTNET_CONTRACT_PACKAGE_ID}
-        walrusAggregatorUrl="https://aggregator.walrus-testnet.walrus.space"
+        packageId={TESTNET_CONTRACT_PACKAGE_ID || ''}
+        walrusPublisherUrl="https://publisher.walrus-testnet.walrus.space"
         onUploadComplete={handleUploadComplete}
       />
 
@@ -119,10 +119,10 @@ export default function UploadPage() {
         <ol className="list-inside list-decimal space-y-2 text-sm text-blue-800 dark:text-blue-200">
           <li>Connect your Sui wallet using the button above</li>
           <li>Select a file to upload (any file type supported)</li>
-          <li>Click "Upload to Walrus & Register" to start the process</li>
+          <li>Click &quot;Upload to Walrus &amp; Register&quot; to start the process</li>
           <li>The file will be uploaded to Walrus decentralized storage</li>
           <li>The content metadata will be registered on the Sui blockchain</li>
-          <li>You'll receive a Blob ID and transaction digest for verification</li>
+          <li>You&apos;ll receive a Blob ID and transaction digest for verification</li>
         </ol>
       </div>
     </div>

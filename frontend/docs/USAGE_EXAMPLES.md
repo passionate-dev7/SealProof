@@ -86,7 +86,7 @@ import { TESTNET_CONTRACT_PACKAGE_ID } from '@/app/config/network';
 export default function SimpleUpload() {
   return (
     <div className="container mx-auto p-8">
-      <h1 className="mb-6 text-2xl font-bold">Upload to TruthChain</h1>
+      <h1 className="mb-6 text-2xl font-bold">Upload to SealProof</h1>
       <UploadToWalrus
         packageId={TESTNET_CONTRACT_PACKAGE_ID}
         onUploadComplete={(blobId, txDigest) => {
@@ -638,7 +638,7 @@ export default function CompleteUploadPage() {
   return (
     <div className="container mx-auto max-w-4xl space-y-6 p-8">
       <header className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">TruthChain Upload Center</h1>
+        <h1 className="text-3xl font-bold">SealProof Upload Center</h1>
         <WalletConnect />
       </header>
 

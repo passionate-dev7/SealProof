@@ -81,7 +81,7 @@ export interface VerifyContentResponse {
   content: {
     id: string;
     hash: string;
-    metadata: any;
+    metadata: Record<string, unknown>;
     registrationDate: string;
     lastModified: string;
   };
