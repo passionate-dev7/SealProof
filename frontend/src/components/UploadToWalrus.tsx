@@ -22,7 +22,7 @@ export function UploadToWalrus({
   onUploadComplete,
 }: UploadToWalrusProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [enableEncryption, setEnableEncryption] = useState(true);
+  const [enableEncryption, setEnableEncryption] = useState(true); // Enabled by default - real Seal key servers configured
   const [enableAIDetection, setEnableAIDetection] = useState(false);
   const [aiDetectionProgress, setAiDetectionProgress] = useState(false);
   const [encryptionProgress, setEncryptionProgress] = useState(false);
@@ -123,30 +123,28 @@ export function UploadToWalrus({
           </div>
 
           {/* Feature Toggles */}
-          <div className="space-y-3 rounded-md border border-gray-200 p-4 dark:border-gray-600">
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <div className="flex items-center gap-2">
+          <div className="space-y-4 rounded-md border border-gray-200 p-4 dark:border-gray-600">
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
                   <label htmlFor="encryption-toggle" className="text-sm font-medium text-gray-700 dark:text-gray-300">
                     Enable Seal Encryption
                   </label>
-                  <button
-                    className="group relative"
-                    title="Encryption info"
-                  >
-                    <svg className="h-4 w-4 text-gray-400 hover:text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                  <div className="group relative">
+                    <svg className="h-4 w-4 text-gray-400 hover:text-gray-600 cursor-help" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                     </svg>
-                    <div className="invisible absolute left-6 top-0 z-10 w-64 rounded-md bg-gray-900 p-2 text-xs text-white opacity-0 shadow-lg transition-all group-hover:visible group-hover:opacity-100">
-                      Seal encryption protects your file with homomorphic encryption, ensuring privacy while allowing authorized computation on encrypted data.
-                    </div>
-                  </button>
+                    {/* <div className="invisible absolute left-6 top-0 z-50 w-72 rounded-lg bg-gray-900 p-3 text-xs text-white opacity-0 shadow-2xl transition-all group-hover:visible group-hover:opacity-100 pointer-events-none">
+                      <div className="font-semibold mb-1">🔒 Seal Encryption</div>
+                      Protects your file with identity-based encryption before upload. Only you can decrypt with your Sui wallet.
+                    </div> */}
+                  </div>
                 </div>
-                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                  Protect your data with homomorphic encryption
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Client-side IBE encryption with threshold decryption
                 </p>
               </div>
-              <label className="relative inline-flex cursor-pointer items-center">
+              <label className="relative inline-flex cursor-pointer items-center flex-shrink-0">
                 <input
                   id="encryption-toggle"
                   type="checkbox"
@@ -159,29 +157,27 @@ export function UploadToWalrus({
               </label>
             </div>
 
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <div className="flex items-center gap-2">
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
                   <label htmlFor="ai-detection-toggle" className="text-sm font-medium text-gray-700 dark:text-gray-300">
                     Enable AI Detection
                   </label>
-                  <button
-                    className="group relative"
-                    title="AI detection info"
-                  >
-                    <svg className="h-4 w-4 text-gray-400 hover:text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                  <div className="group relative">
+                    <svg className="h-4 w-4 text-gray-400 hover:text-gray-600 cursor-help" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                     </svg>
-                    <div className="invisible absolute left-6 top-0 z-10 w-64 rounded-md bg-gray-900 p-2 text-xs text-white opacity-0 shadow-lg transition-all group-hover:visible group-hover:opacity-100">
-                      AI detection analyzes your file to determine if it was generated by AI, providing a confidence score and detection metrics.
-                    </div>
-                  </button>
+                    {/* <div className="invisible absolute left-6 top-0 z-50 w-72 rounded-lg bg-gray-900 p-3 text-xs text-white opacity-0 shadow-2xl transition-all group-hover:visible group-hover:opacity-100 pointer-events-none">
+                      <div className="font-semibold mb-1">🤖 AI Detection</div>
+                      Analyzes your file with 5 algorithms to detect AI-generated content. Score recorded on blockchain for provenance.
+                    </div> */}
+                  </div>
                 </div>
-                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                  Detect AI-generated content before upload
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Heuristic analysis with blockchain attestation
                 </p>
               </div>
-              <label className="relative inline-flex cursor-pointer items-center">
+              <label className="relative inline-flex cursor-pointer items-center flex-shrink-0">
                 <input
                   id="ai-detection-toggle"
                   type="checkbox"
@@ -284,59 +280,65 @@ export function UploadToWalrus({
           )}
 
           {result && (
-            <div className="rounded-md bg-green-50 p-4 dark:bg-green-900/20">
-              <div className="mb-2 flex items-center gap-2">
-                <h4 className="text-sm font-semibold text-green-800 dark:text-green-200">
-                  Upload Successful!
+            <div className="rounded-lg border-2 border-green-500 bg-white p-4 shadow-md dark:border-green-600 dark:bg-gray-800">
+              <div className="mb-3 flex flex-wrap items-center gap-2">
+                <h4 className="text-base font-bold text-green-700 dark:text-green-400">
+                  ✅ Upload Successful!
                 </h4>
                 {isEncrypted && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-green-600 px-2 py-0.5 text-xs font-medium text-white">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-blue-600 px-2.5 py-1 text-xs font-semibold text-white">
                     🔒 Encrypted
                   </span>
                 )}
                 {aiDetectionResult?.isAI && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-orange-600 px-2 py-0.5 text-xs font-medium text-white">
-                    🤖 AI Content
+                  <span className="inline-flex items-center gap-1 rounded-full bg-orange-600 px-2.5 py-1 text-xs font-semibold text-white">
+                    🤖 AI Detected
                   </span>
                 )}
               </div>
-              <div className="space-y-1 text-xs text-green-700 dark:text-green-300">
-                <p>
-                  <span className="font-medium">Blob ID:</span>{' '}
-                  <code className="rounded bg-green-100 px-1 py-0.5 dark:bg-green-900/40">
+              <div className="space-y-2 text-sm text-gray-900 dark:text-gray-100">
+                <div className="rounded-md bg-gray-50 p-2 dark:bg-gray-700">
+                  <span className="font-semibold text-gray-700 dark:text-gray-300">Blob ID:</span>
+                  <code className="ml-2 break-all font-mono text-xs text-blue-600 dark:text-blue-400">
                     {result.blobId}
                   </code>
-                </p>
-                <p>
-                  <span className="font-medium">Content Hash:</span>{' '}
-                  <code className="rounded bg-green-100 px-1 py-0.5 dark:bg-green-900/40">
-                    {result.contentHash.slice(0, 16)}...
+                </div>
+                <div className="rounded-md bg-gray-50 p-2 dark:bg-gray-700">
+                  <span className="font-semibold text-gray-700 dark:text-gray-300">Content Hash:</span>
+                  <code className="ml-2 break-all font-mono text-xs text-purple-600 dark:text-purple-400">
+                    {result.contentHash}
                   </code>
-                </p>
+                </div>
                 {result.txDigest && (
-                  <p>
-                    <span className="font-medium">Transaction:</span>{' '}
-                    <code className="rounded bg-green-100 px-1 py-0.5 dark:bg-green-900/40">
+                  <div className="rounded-md bg-gray-50 p-2 dark:bg-gray-700">
+                    <span className="font-semibold text-gray-700 dark:text-gray-300">Transaction:</span>
+                    <code className="ml-2 break-all font-mono text-xs text-green-600 dark:text-green-400">
                       {result.txDigest}
                     </code>
-                  </p>
+                  </div>
                 )}
-                <p>
-                  <span className="font-medium">Encryption Status:</span>{' '}
-                  <span className={isEncrypted ? 'font-semibold' : ''}>
-                    {isEncrypted ? 'Encrypted with Seal (Homomorphic)' : 'Plaintext'}
+                <div className="rounded-md bg-gray-50 p-2 dark:bg-gray-700">
+                  <span className="font-semibold text-gray-700 dark:text-gray-300">Encryption:</span>
+                  <span className="ml-2 font-medium text-gray-900 dark:text-gray-100">
+                    {isEncrypted ? '🔐 Seal IBE (2-of-2 threshold)' : '📄 Plaintext'}
                   </span>
-                </p>
+                </div>
                 {aiDetectionResult && (
-                  <p>
-                    <span className="font-medium">AI Detection:</span>{' '}
-                    {aiDetectionResult.isAI ? `AI-generated (${(aiDetectionResult.score * 100).toFixed(1)}% score)` : 'Human-generated'}
-                  </p>
+                  <div className="rounded-md bg-gray-50 p-2 dark:bg-gray-700">
+                    <span className="font-semibold text-gray-700 dark:text-gray-300">AI Detection:</span>
+                    <span className="ml-2 font-medium text-gray-900 dark:text-gray-100">
+                      {aiDetectionResult.isAI
+                        ? `🤖 AI-generated (${(aiDetectionResult.score * 100).toFixed(1)}% confidence)`
+                        : `✍️ Human-generated (${(aiDetectionResult.score * 100).toFixed(1)}% confidence)`}
+                    </span>
+                  </div>
                 )}
-                <p>
-                  <span className="font-medium">Access Policy:</span>{' '}
-                  {isEncrypted ? 'Owner-controlled decryption' : 'Public read access'}
-                </p>
+                <div className="rounded-md bg-gray-50 p-2 dark:bg-gray-700">
+                  <span className="font-semibold text-gray-700 dark:text-gray-300">Access:</span>
+                  <span className="ml-2 font-medium text-gray-900 dark:text-gray-100">
+                    {isEncrypted ? '🔑 Owner-controlled' : '🌍 Public'}
+                  </span>
+                </div>
               </div>
             </div>
           )}

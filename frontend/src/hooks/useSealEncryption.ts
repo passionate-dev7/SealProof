@@ -101,21 +101,25 @@ export interface UseSealEncryptionReturn {
 }
 
 /**
- * Simplified Seal configuration for initial deployment
- * TODO: Replace with real Seal key servers once available
+ * Real Seal configuration using public testnet key servers
+ * Key servers from @mysten/seal SDK integration tests
  */
 const SIMPLIFIED_SEAL_CONFIG: SealConfig = {
   keyServers: [
     {
-      objectId: '0xe9569b0c341e413a2a24742c797a40bf1445dd3775e025280c884060bc080146',
+      objectId: '0x3cf2a38f061ede3239c1629cb80a9be0e0676b1c15d34c94d104d4ba9d99076f',
+      weight: 1
+    },
+    {
+      objectId: '0x81aeaa8c25d2c912e1dc23b4372305b7a602c4ec4cc3e510963bc635e500aa37',
       weight: 1
     }
   ],
-  threshold: 1,
+  threshold: 2,
   network: 'testnet',
-  packageId: '0xe9569b0c341e413a2a24742c797a40bf1445dd3775e025280c884060bc080146',
+  packageId: '0x8afa5d31dbaa0a8fb07082692940ca3d56b5e856c5126cb5a3693f0a4de63b82', // Real Seal testnet package
   sessionKeyTTL: 1800, // 30 minutes
-  verifyKeyServers: false // Simplified config - skip verification for now
+  verifyKeyServers: true // Enable verification with real key servers
 };
 
 /**
@@ -263,8 +267,10 @@ export function useSealEncryption(
 
   /**
    * Auto-initialize when wallet connects
+   * Enabled with real Seal testnet key servers
    */
   useEffect(() => {
+    // Re-enabled: Using real Seal testnet key servers
     if (autoInitialize && currentAccount && !sealIntegrationRef.current) {
       initialize();
     }

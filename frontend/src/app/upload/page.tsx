@@ -3,7 +3,8 @@
 import { UploadToWalrus } from '@/components/UploadToWalrus';
 import { WalletConnect } from '@/components/WalletConnect';
 import { useSui } from '@/hooks/useSui';
-import { TESTNET_CONTRACT_PACKAGE_ID } from '../config/network';
+// Updated package ID with encryption + AI detection support
+const PACKAGE_ID = '0x5d562b619595ae7021aa0c409d5b55bfb73d5553ba7be3369ae39a2d71f9c6d0';
 import { useState } from 'react';
 
 export default function UploadPage() {
@@ -55,7 +56,7 @@ export default function UploadPage() {
 
       {/* Upload Component */}
       <UploadToWalrus
-        packageId={TESTNET_CONTRACT_PACKAGE_ID || ''}
+        packageId={PACKAGE_ID}
         walrusPublisherUrl="https://publisher.walrus-testnet.walrus.space"
         onUploadComplete={handleUploadComplete}
       />

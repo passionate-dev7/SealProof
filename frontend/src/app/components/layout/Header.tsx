@@ -7,23 +7,52 @@ import NetworkType from '@suiware/kit/NetworkType'
 import { APP_NAME } from '../../config/main'
 import Image from 'next/image'
 import Logo from '../../assets/logo.svg'
+import NextLink from 'next/link'
+import { usePathname } from 'next/navigation'
 
 const Header = () => {
+  const pathname = usePathname()
+
+  const navLinks = [
+    { href: '/upload', label: 'Upload' },
+    { href: '/authenticate', label: 'Authenticate' },
+    { href: '/verify', label: 'Verify' },
+  ]
+
   return (
     <header className="supports-backdrop-blur:bg-white/60 dark:border-slate-50/1 sticky top-0 z-40 flex w-full flex-row flex-wrap items-center justify-center gap-4 bg-white/95 px-3 py-3 backdrop-blur transition-colors duration-500 sm:justify-between sm:gap-3 lg:z-50 lg:border-b lg:border-slate-900/10 dark:bg-transparent">
-      <Link
-        href="#"
-        className="flex flex-col items-center justify-center gap-1 text-sds-dark outline-none hover:no-underline sm:flex-row dark:text-sds-light"
-      >
-        <Image
-          width={40}
-          height={40}
-          src={Logo}
-          alt="Logo"
-          className="h-12 w-12"
-        />
-        <div className="pt-1 text-xl sm:text-2xl">{APP_NAME}</div>
-      </Link>
+      <div className="flex items-center gap-6">
+        <Link
+          href="/"
+          className="flex flex-col items-center justify-center gap-1 text-sds-dark outline-none hover:no-underline sm:flex-row dark:text-sds-light"
+        >
+          <Image
+            width={40}
+            height={40}
+            src={Logo}
+            alt="Logo"
+            className="h-12 w-12"
+          />
+          <div className="pt-1 text-xl sm:text-2xl">{APP_NAME}</div>
+        </Link>
+
+        {/* Navigation Links */}
+        <nav className="hidden sm:flex gap-4">
+          {navLinks.map((link) => (
+            <NextLink
+              key={link.href}
+              href={link.href}
+              className={`text-sm font-medium transition-colors hover:text-blue-600 dark:hover:text-blue-400 ${
+                pathname === link.href
+                  ? 'text-blue-600 dark:text-blue-400'
+                  : 'text-gray-700 dark:text-gray-300'
+              }`}
+            >
+              {link.label}
+            </NextLink>
+          ))}
+        </nav>
+      </div>
 
       <div className="flex w-full flex-col items-center justify-center gap-3 sm:w-auto sm:flex-row">
         <div className="flex flex-row items-center justify-center gap-3">
@@ -37,6 +66,23 @@ const Header = () => {
           <ConnectButton />
         </div>
       </div>
+
+      {/* Mobile Navigation */}
+      <nav className="flex sm:hidden w-full justify-center gap-4 border-t pt-3 dark:border-gray-700">
+        {navLinks.map((link) => (
+          <NextLink
+            key={link.href}
+            href={link.href}
+            className={`text-xs font-medium transition-colors hover:text-blue-600 dark:hover:text-blue-400 ${
+              pathname === link.href
+                ? 'text-blue-600 dark:text-blue-400'
+                : 'text-gray-700 dark:text-gray-300'
+            }`}
+          >
+            {link.label}
+          </NextLink>
+        ))}
+      </nav>
     </header>
   )
 }

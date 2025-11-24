@@ -54,7 +54,7 @@ export default function Verify() {
       });
 
       // const packageId = process.env.NEXT_PUBLIC_SUI_PACKAGE_ID || '0xe9569b0c341e413a2a24742c797a40bf1445dd3775e025280c884060bc080146';
-      const registryId = '0xaf077d541b6b72cc4c88ee12a3df856518537a39560f0400aae0d7d6afe0440b';
+      const registryId = '0x24f8c18a8e43b977e93651b3594ce45d63a8934bd091513973f9eee23f6324f3';
 
       // Query the registry for the content proof
       const registryObject = await suiClient.getObject({
@@ -74,7 +74,7 @@ export default function Verify() {
 
         // For now, we'll make a best-effort attempt to find the content
         // In production, this should use a proper indexer or dynamic field query
-        toast.info('Blockchain data query successful');
+        toast.success('Blockchain data query successful');
 
         // Mock data for demonstration - replace with actual blockchain query
         const mockData: ContentProofData = {
@@ -166,7 +166,7 @@ export default function Verify() {
     try {
       // This is a placeholder - in production, you'd need the actual encrypted file
       // and transaction bytes from the blockchain
-      toast.info('Decryption requires encrypted file data from Walrus storage');
+      toast('Decryption requires encrypted file data from Walrus storage');
 
       // For now, we'll show an instructional message
       toast.error('Please download the encrypted file first, then use the decrypt feature');
@@ -184,7 +184,7 @@ export default function Verify() {
   const handleDownloadDecrypted = () => {
     if (!decryptedContent) return;
 
-    const blob = new Blob([decryptedContent]);
+    const blob = new Blob([new Uint8Array(decryptedContent)]);
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;

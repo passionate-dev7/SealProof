@@ -193,7 +193,7 @@ export function useWalrusUpload() {
           encryptedFile = await encryptFile(file, identity);
 
           // Convert encrypted data to Blob for upload
-          const encryptedBlob = new Blob([encryptedFile.encryptedData.encryptedObject], {
+          const encryptedBlob = new Blob([new Uint8Array(encryptedFile.encryptedData.encryptedObject)], {
             type: 'application/octet-stream'
           });
 
@@ -244,9 +244,20 @@ export function useWalrusUpload() {
           message: 'Registering on blockchain...',
         });
 
-        // TODO: Enhanced registerContent should accept encryption status and Nautilus attestation
-        // For now, we use the existing registerContent method
-        const txResult = await registerContent(blobId, contentHash, packageId);
+        // Call registerContent with new parameters
+        // Convert attestationBytes (hex string) to Uint8Array
+        const attestationArray = nautilusAttestation?.attestationBytes
+          ? new Uint8Array(nautilusAttestation.attestationBytes.match(/.{1,2}/g)?.map(byte => parseInt(byte, 16)) || [])
+          : null;
+
+        const txResult = await registerContent(
+          blobId,
+          contentHash,
+          packageId,
+          enableEncryption ?? false,
+          attestationArray,
+          nautilusAttestation?.aiScore || 0
+        );
         txDigest = txResult.digest;
       } else {
         console.warn('Package ID not configured - skipping blockchain registration');
@@ -271,7 +282,14 @@ export function useWalrusUpload() {
       return uploadResult;
 
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      let errorMessage = error instanceof Error ? error.message : 'Unknown error';
+
+      // Check for content already registered error
+      if (errorMessage.includes('E_CONTENT_ALREADY_REGISTERED') ||
+          errorMessage.includes('MoveAbort') && errorMessage.includes('2)')) {
+        errorMessage = 'This file has already been registered on the blockchain. The smart contract prevents duplicate content registration to maintain provenance integrity. Please upload a different file or modify the content.';
+      }
+
       setProgress({
         stage: 'error',
         message: 'Upload failed',

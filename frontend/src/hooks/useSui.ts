@@ -29,7 +29,7 @@ export function useSui() {
     if (!account) throw new Error('Wallet not connected');
 
     // Registry shared object ID from deployment
-    const REGISTRY_ID = '0xaf077d541b6b72cc4c88ee12a3df856518537a39560f0400aae0d7d6afe0440b';
+    const REGISTRY_ID = '0x24f8c18a8e43b977e93651b3594ce45d63a8934bd091513973f9eee23f6324f3';
 
     // Convert hex hash to bytes
     const hashBytes = Array.from(
@@ -84,7 +84,7 @@ export function useSui() {
     const tx = new Transaction();
 
     tx.moveCall({
-      target: `${packageId}::truthchain::verify_content`,
+      target: `${packageId}::sealproof::verify_content`,
       arguments: [
         tx.pure.string(blobId),
       ],
@@ -113,7 +113,7 @@ export function useSui() {
       transactionBlock: (() => {
         const tx = new Transaction();
         tx.moveCall({
-          target: `${packageId}::truthchain::get_content`,
+          target: `${packageId}::sealproof::get_content`,
           arguments: [tx.pure.string(blobId)],
         });
         return tx;
