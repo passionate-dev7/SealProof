@@ -1,6 +1,6 @@
 /// AccessControl - Privacy and permission management with Seal encryption integration
 /// Manages conditional access policies, encryption keys, and privacy settings
-module truthchain::access_control {
+module sealproof::access_control {
     use sui::object::{Self, UID, ID};
     use sui::transfer;
     use sui::tx_context::{Self, TxContext};

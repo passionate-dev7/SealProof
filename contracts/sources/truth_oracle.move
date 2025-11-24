@@ -1,6 +1,6 @@
 /// TruthOracle - AI-powered content verification with multi-verifier consensus
 /// Stores AI detection results, confidence scores, and time-weighted reputation
-module truthchain::truth_oracle {
+module sealproof::truth_oracle {
     use sui::object::{Self, UID, ID};
     use sui::transfer;
     use sui::tx_context::{Self, TxContext};

@@ -1,5 +1,5 @@
 [package]
-name = "TruthChain"
+name = "SealProof"
 version = "1.0.0"
 edition = "2024.beta"
 
@@ -7,4 +7,4 @@ edition = "2024.beta"
 Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "framework/mainnet" }
 
 [addresses]
-truthchain = "0x0"
+sealproof = "0x0"

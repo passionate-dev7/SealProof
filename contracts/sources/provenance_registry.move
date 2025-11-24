@@ -1,6 +1,6 @@
 /// ProvenanceRegistry - Core content registration and verification system
 /// Stores cryptographic proofs, metadata, and ownership for all content
-module truthchain::provenance_registry {
+module sealproof::provenance_registry {
     use sui::object::{Self, UID, ID};
     use sui::transfer;
     use sui::tx_context::{Self, TxContext};
@@ -10,6 +10,7 @@ module truthchain::provenance_registry {
     use std::string::{Self, String};
     use std::vector;
     use sui::vec_map::{Self, VecMap};
+    use std::option::{Self, Option};
 
     // ======== Error Codes ========
     const E_NOT_AUTHORIZED: u64 = 1;
@@ -18,6 +19,10 @@ module truthchain::provenance_registry {
     const E_CONTENT_NOT_FOUND: u64 = 4;
     const E_INVALID_METADATA: u64 = 5;
     const E_TRANSFER_NOT_ALLOWED: u64 = 6;
+    const E_INVALID_NAUTILUS_ATTESTATION: u64 = 7;
+
+    // ======== Constants ========
+    const AI_DETECTION_THRESHOLD: u64 = 50; // Score >= 50 indicates AI-generated
 
     // ======== Structs ========
 
@@ -64,6 +69,19 @@ module truthchain::provenance_registry {
 
         // Transfer control
         transferable: bool,
+
+        // Enhanced security and AI detection features
+        is_encrypted: bool,
+        nautilus_attestation: Option<vector<u8>>,
+        ai_detection_score: Option<u64>,
+        is_ai_generated: Option<bool>,
+        seal_policy_id: Option<ID>,
+    }
+
+    /// AI Detection result for helper functions
+    public struct AIDetectionResult has copy, drop, store {
+        score: u64,
+        is_ai_generated: bool,
     }
 
     /// Transfer capability for controlled ownership transfers
@@ -113,6 +131,13 @@ module truthchain::provenance_registry {
         timestamp: u64,
     }
 
+    public struct AIDetectionRecorded has copy, drop {
+        content_id: ID,
+        score: u64,
+        is_ai_generated: bool,
+        timestamp: u64,
+    }
+
     // ======== Init Function ========
 
     fun init(ctx: &mut TxContext) {
@@ -137,13 +162,16 @@ module truthchain::provenance_registry {
 
     // ======== Public Entry Functions ========
 
-    /// Register new content with cryptographic proof
+    /// Register new content with cryptographic proof (enhanced with AI detection and encryption support)
     public entry fun register_content(
         registry: &mut Registry,
         content_hash: vector<u8>,
         algorithm: vector<u8>,
         walrus_blob_id: vector<u8>,
         seal_encryption_key: vector<u8>,
+        is_encrypted: bool,
+        nautilus_attestation: vector<u8>,
+        ai_score: u64,
         clock: &Clock,
         ctx: &mut TxContext
     ) {
@@ -151,10 +179,35 @@ module truthchain::provenance_registry {
         assert!(vector::length(&content_hash) > 0, E_INVALID_HASH);
         assert!(!table::contains(&registry.content_index, content_hash), E_CONTENT_ALREADY_REGISTERED);
 
+        // Validate nautilus attestation if provided
+        if (vector::length(&nautilus_attestation) > 0) {
+            assert!(vector::length(&nautilus_attestation) >= 32, E_INVALID_NAUTILUS_ATTESTATION);
+        };
+
         let creator = tx_context::sender(ctx);
         let timestamp = clock::timestamp_ms(clock);
 
-        // Create content proof
+        // Process AI detection score
+        let ai_detection_score_opt = if (ai_score > 0) {
+            option::some(ai_score)
+        } else {
+            option::none()
+        };
+
+        let is_ai_generated_opt = if (ai_score > 0) {
+            option::some(ai_score >= AI_DETECTION_THRESHOLD)
+        } else {
+            option::none()
+        };
+
+        // Process nautilus attestation
+        let nautilus_attestation_opt = if (vector::length(&nautilus_attestation) > 0) {
+            option::some(nautilus_attestation)
+        } else {
+            option::none()
+        };
+
+        // Create content proof with enhanced fields
         let content_proof = ContentProof {
             id: object::new(ctx),
             content_hash,
@@ -169,6 +222,11 @@ module truthchain::provenance_registry {
             verification_count: 0,
             trust_score: 50, // Start at neutral
             transferable: true,
+            is_encrypted,
+            nautilus_attestation: nautilus_attestation_opt,
+            ai_detection_score: ai_detection_score_opt,
+            is_ai_generated: is_ai_generated_opt,
+            seal_policy_id: option::none(), // Can be set later via update function
         };
 
         let content_id = object::uid_to_inner(&content_proof.id);
@@ -177,7 +235,7 @@ module truthchain::provenance_registry {
         table::add(&mut registry.content_index, content_hash, content_id);
         registry.content_count = registry.content_count + 1;
 
-        // Emit event
+        // Emit registration event
         event::emit(ContentRegistered {
             content_id,
             content_hash,
@@ -185,6 +243,16 @@ module truthchain::provenance_registry {
             timestamp,
             walrus_blob_id: string::utf8(walrus_blob_id),
         });
+
+        // Emit AI detection event if score was provided
+        if (ai_score > 0) {
+            event::emit(AIDetectionRecorded {
+                content_id,
+                score: ai_score,
+                is_ai_generated: ai_score >= AI_DETECTION_THRESHOLD,
+                timestamp,
+            });
+        };
 
         // Transfer to creator
         transfer::public_transfer(content_proof, creator);
@@ -364,6 +432,103 @@ module truthchain::provenance_registry {
     /// Check if content is registered
     public fun is_content_registered(registry: &Registry, content_hash: vector<u8>): bool {
         table::contains(&registry.content_index, content_hash)
+    }
+
+    /// Get encryption status of content
+    public fun get_encryption_status(proof: &ContentProof): bool {
+        proof.is_encrypted
+    }
+
+    /// Get AI detection result if available
+    public fun get_ai_detection(proof: &ContentProof): Option<AIDetectionResult> {
+        if (option::is_some(&proof.ai_detection_score)) {
+            let score = *option::borrow(&proof.ai_detection_score);
+            let is_ai = if (option::is_some(&proof.is_ai_generated)) {
+                *option::borrow(&proof.is_ai_generated)
+            } else {
+                score >= AI_DETECTION_THRESHOLD
+            };
+
+            option::some(AIDetectionResult {
+                score,
+                is_ai_generated: is_ai,
+            })
+        } else {
+            option::none()
+        }
+    }
+
+    /// Get nautilus attestation if available
+    public fun get_nautilus_attestation(proof: &ContentProof): Option<vector<u8>> {
+        proof.nautilus_attestation
+    }
+
+    /// Get seal policy ID if set
+    public fun get_seal_policy_id(proof: &ContentProof): Option<ID> {
+        proof.seal_policy_id
+    }
+
+    /// Update AI detection score (owner only)
+    public entry fun update_ai_detection(
+        content_proof: &mut ContentProof,
+        ai_score: u64,
+        clock: &Clock,
+        ctx: &mut TxContext
+    ) {
+        assert!(tx_context::sender(ctx) == content_proof.current_owner, E_NOT_AUTHORIZED);
+        assert!(ai_score <= 100, E_INVALID_METADATA);
+
+        content_proof.ai_detection_score = option::some(ai_score);
+        content_proof.is_ai_generated = option::some(ai_score >= AI_DETECTION_THRESHOLD);
+        content_proof.last_updated = clock::timestamp_ms(clock);
+
+        event::emit(AIDetectionRecorded {
+            content_id: object::uid_to_inner(&content_proof.id),
+            score: ai_score,
+            is_ai_generated: ai_score >= AI_DETECTION_THRESHOLD,
+            timestamp: content_proof.last_updated,
+        });
+    }
+
+    /// Set seal policy ID (owner only)
+    public entry fun set_seal_policy_id(
+        content_proof: &mut ContentProof,
+        policy_id: ID,
+        clock: &Clock,
+        ctx: &mut TxContext
+    ) {
+        assert!(tx_context::sender(ctx) == content_proof.current_owner, E_NOT_AUTHORIZED);
+
+        content_proof.seal_policy_id = option::some(policy_id);
+        content_proof.last_updated = clock::timestamp_ms(clock);
+
+        event::emit(ContentUpdated {
+            content_id: object::uid_to_inner(&content_proof.id),
+            updated_by: tx_context::sender(ctx),
+            timestamp: content_proof.last_updated,
+            update_type: string::utf8(b"seal_policy_set"),
+        });
+    }
+
+    /// Update nautilus attestation (owner only)
+    public entry fun update_nautilus_attestation(
+        content_proof: &mut ContentProof,
+        nautilus_attestation: vector<u8>,
+        clock: &Clock,
+        ctx: &mut TxContext
+    ) {
+        assert!(tx_context::sender(ctx) == content_proof.current_owner, E_NOT_AUTHORIZED);
+        assert!(vector::length(&nautilus_attestation) >= 32, E_INVALID_NAUTILUS_ATTESTATION);
+
+        content_proof.nautilus_attestation = option::some(nautilus_attestation);
+        content_proof.last_updated = clock::timestamp_ms(clock);
+
+        event::emit(ContentUpdated {
+            content_id: object::uid_to_inner(&content_proof.id),
+            updated_by: tx_context::sender(ctx),
+            timestamp: content_proof.last_updated,
+            update_type: string::utf8(b"nautilus_attestation_updated"),
+        });
     }
 
     // ======== Admin Functions ========

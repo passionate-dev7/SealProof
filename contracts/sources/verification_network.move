@@ -1,6 +1,6 @@
 /// VerificationNetwork - Decentralized verifier network with staking and reputation
 /// Manages verifier registration, voting, rewards, and slashing
-module truthchain::verification_network {
+module sealproof::verification_network {
     use sui::object::{Self, UID, ID};
     use sui::transfer;
     use sui::tx_context::{Self, TxContext};
